@@ -10,8 +10,8 @@ class LanguageSwitch extends StatefulWidget {
 class _LanguageSwitchState extends State<LanguageSwitch> {
   bool isLeft = true;
 
-  final String firstFlag = 'assets/images/egypt.png';
-  final String secondFlag = 'assets/images/us.png';
+  final String firstFlag = 'assets/images/eg.png';
+  final String secondFlag = 'assets/images/LR.png';
 
   @override
   Widget build(BuildContext context) {
