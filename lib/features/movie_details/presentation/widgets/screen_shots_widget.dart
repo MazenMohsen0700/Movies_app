@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+import 'package:movie_app/core/constants/app_strings.dart';
+
+class ScreenShotsWidget extends StatelessWidget {
+  const ScreenShotsWidget({super.key});
+
+  final List<String> screenshots = const [
+    'assets/Screen/shot1.png',
+    'assets/Screen/shot2.png',
+    'assets/Screen/shot3.png',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+
+          const Text(
+            AppStrings.screenShots,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          ...screenshots.map((imagePath) {
+            return Container(
+              width: double.infinity,
+              height: 170,
+              margin: const EdgeInsets.only(bottom: 12.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                image: DecorationImage(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          }),
+
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
