@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moives_app2/features/Auth/presentation/screens/forget_screen.dart';
 import 'package:moives_app2/features/Auth/presentation/screens/register_screen.dart';
 
 import '../../../../core/theme/appcolor.dart';
@@ -72,12 +73,17 @@ class LoginScreen extends StatelessWidget {
 
               Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  "Forgot Password ?",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Appcolor.Mainyello,
+                child: InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ForgetScreen(),));
+                  },
+                  child: Text(
+                    "Forgot Password ?",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Appcolor.Mainyello,
+                    ),
                   ),
                 ),
               ),

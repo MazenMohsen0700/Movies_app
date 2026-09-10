@@ -52,128 +52,131 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: Form(
         key: formkey,
-        child: Column(
-          children: [
-            AvatarCarouselSelector(
-              avatarImages: avatarList,
-              onAvatarSelected: (selectedPath) {
-                setState(() {
-                  selectedAvatarPath = selectedPath;
-                });
-              },
-            ),
-            SizedBox(height: 12),
-            Text("Avatar",style: TextStyle(
-              color: Colors.white,
-              fontWeight:   FontWeight.w400,
-              fontSize: 16,
-
-
-            ),),
-            SizedBox(height: 12),
-            CustomTextField(hintText: "Enter Name", logo: "assets/icons/icn_idef.svg", keyboardType: TextInputType.name,),
-            SizedBox(height: 24),
-
-            CustomTextField(
-              validator: (value) {
-                bool emailValid = RegExp(
-                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                ).hasMatch(value ?? "");
-
-                if (value == null || value.isEmpty) {
-                  return "please enter email";
-                } else if (!emailValid) {
-                  return "enter vaild email";
-                } else {
-                  return null;
+        child: SingleChildScrollView(
+         
+          child: Column(
+            children: [
+              AvatarCarouselSelector(
+                avatarImages: avatarList,
+                onAvatarSelected: (selectedPath) {
+                  setState(() {
+                    selectedAvatarPath = selectedPath;
+                  });
+                },
+              ),
+              SizedBox(height: 12),
+              Text("Avatar",style: TextStyle(
+                color: Colors.white,
+                fontWeight:   FontWeight.w400,
+                fontSize: 16,
+          
+          
+              ),),
+              SizedBox(height: 12),
+              CustomTextField(hintText: "Enter Name", logo: "assets/icons/icn_idef.svg", keyboardType: TextInputType.name,),
+              SizedBox(height: 24),
+          
+              CustomTextField(
+                validator: (value) {
+                  bool emailValid = RegExp(
+                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                  ).hasMatch(value ?? "");
+          
+                  if (value == null || value.isEmpty) {
+                    return "please enter email";
+                  } else if (!emailValid) {
+                    return "enter vaild email";
+                  } else {
+                    return null;
+                  }
+                },
+                keyboardType: TextInputType.emailAddress,
+                hintText: 'Email',
+                logo: 'assets/icons/icn_mail.svg',
+              ),
+              SizedBox(height: 24),
+              CustomTextField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "please enter Password";
+                  } else if (value.length < 8) {
+                    return "Password must be more than 8 char or numbers";
+                  } else {
+                    return null;
+                  }
+                },
+                keyboardType: TextInputType.visiblePassword,
+                hintText: 'Password',
+                logo: 'assets/icons/icn_lock.svg',
+                isPassword: true,
+              ),
+              SizedBox(height: 24),
+          
+              CustomTextField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Wrong Password";
+                  } else if (value.length < 8) {
+                    return "Password must be more than 8 char or numbers";
+                  } else {
+                    return null;
+                  }
+                },
+                keyboardType: TextInputType.visiblePassword,
+                hintText: 'Confirm Password',
+                logo: 'assets/icons/icn_lock.svg',
+                isPassword: true,
+              ),
+              SizedBox(height: 24),
+              CustomTextField(
+          
+                keyboardType: TextInputType.number,
+                hintText: 'Phone number',
+                logo: 'assets/icons/icn_call.svg',
+              ),
+              SizedBox(height: 24),
+          
+              Custombut(text: 'Create Account', onPressed: (){
+                if(formkey.currentState!.validate()){
+                  print("login");
                 }
-              },
-              keyboardType: TextInputType.emailAddress,
-              hintText: 'Email',
-              logo: 'assets/icons/icn_mail.svg',
-            ),
-            SizedBox(height: 24),
-            CustomTextField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "please enter Password";
-                } else if (value.length < 8) {
-                  return "Password must be more than 8 char or numbers";
-                } else {
-                  return null;
-                }
-              },
-              keyboardType: TextInputType.visiblePassword,
-              hintText: 'Password',
-              logo: 'assets/icons/icn_lock.svg',
-              isPassword: true,
-            ),
-            SizedBox(height: 24),
-
-            CustomTextField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return "Wrong Password";
-                } else if (value.length < 8) {
-                  return "Password must be more than 8 char or numbers";
-                } else {
-                  return null;
-                }
-              },
-              keyboardType: TextInputType.visiblePassword,
-              hintText: 'Confirm Password',
-              logo: 'assets/icons/icn_lock.svg',
-              isPassword: true,
-            ),
-            SizedBox(height: 24),
-            CustomTextField(
-
-              keyboardType: TextInputType.number,
-              hintText: 'Phone number',
-              logo: 'assets/icons/icn_call.svg',
-            ),
-            SizedBox(height: 24),
-
-            Custombut(text: 'Create Account', onPressed: (){
-              if(formkey.currentState!.validate()){
-                print("login");
-              }
-
-
-            },),
-            SizedBox(height:17),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Already Have Account ?",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
-                  },
-                  child: Text(
-                    " Login",
+          
+          
+              },),
+              SizedBox(height:17),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already Have Account ?",
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
-                      color: Appcolor.Mainyello,
-                      decoration: TextDecoration.underline,
+                      color: Colors.white,
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 18),
-
-            LanguageSwitch(),
-
-          ],
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+                    },
+                    child: Text(
+                      " Login",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Appcolor.Mainyello,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 18),
+          
+              LanguageSwitch(),
+          
+            ],
+          ),
         ),
       ),
     );
