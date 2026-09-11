@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/core/constants/app_strings.dart';
+
+import '../../../../core/constants/app_strings.dart';
+
 
 class ScreenShotsWidget extends StatelessWidget {
   const ScreenShotsWidget({super.key});

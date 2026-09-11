@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:movie_app/core/constants/app_colors.dart';
-import 'package:movie_app/features/browse_movies/date/models/movie_model.dart';
-import 'package:movie_app/core/widgets/movie_card.dart';
-import 'package:movie_app/features/movie_details/presentation/screens/movie_details_screen.dart';
+
+
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/movie_card.dart';
+import '../../../movie_details/presentation/screens/movie_details_screen.dart';
+import '../../date/models/movie_model.dart';
 
 class BrowseMoviesScreen extends StatefulWidget {
   const BrowseMoviesScreen({super.key});

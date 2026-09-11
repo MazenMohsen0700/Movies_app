@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:movie_app/core/constants/app_colors.dart';
 
+
+import '../../../../core/constants/app_colors.dart';
 import '../widgets/movie_header_widget.dart';
 import '../widgets/screen_shots_widget.dart';
 import '../widgets/similar_movies_widget.dart';
