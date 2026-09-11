@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:movie_app/features/browse_movies/date/models/movie_model.dart';
-import 'package:movie_app/core/widgets/movie_card.dart';
+
+
+import '../../../../core/widgets/movie_card.dart';
+import '../../../browse_movies/date/models/movie_model.dart';
 
 class SimilarMoviesWidget extends StatelessWidget {
   const SimilarMoviesWidget({super.key});
