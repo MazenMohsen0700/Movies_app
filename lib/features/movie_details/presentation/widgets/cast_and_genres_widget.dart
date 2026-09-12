@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:movie_app/core/constants/app_colors.dart';
-import 'package:movie_app/core/constants/app_strings.dart';
+
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class CastModel {
   final String name;
