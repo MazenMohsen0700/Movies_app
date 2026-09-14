@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:moives_app2/features/Auth/presentation/screens/login_screen.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../Auth/presentation/screens/login_screen.dart';
 
 class OnboardingPageSix extends StatelessWidget {
   final VoidCallback? onFinishPressed;

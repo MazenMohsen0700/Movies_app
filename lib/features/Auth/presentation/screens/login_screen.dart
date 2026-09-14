@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:moives_app2/features/Auth/presentation/screens/forget_screen.dart';
-import 'package:moives_app2/features/Auth/presentation/screens/register_screen.dart';
+import 'package:movie_app/features/Auth/presentation/screens/forget_screen.dart';
+import 'package:movie_app/features/Auth/presentation/screens/register_screen.dart';
 
 import '../../../../core/theme/appcolor.dart';
 import '../../../../core/widgets/Custom_text_field.dart';
