@@ -17,6 +17,8 @@ class Custombut extends StatelessWidget {
   bool isloading;
   void Function()? onPressed;
   String? logo;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
