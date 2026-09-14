@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/movie_card.dart';
 import '../../../movie_details/presentation/screens/movie_details_screen.dart';
+import '../../../profile/presention/screens/profile_screen.dart';
 import '../../date/models/movie_model.dart';
 
 class BrowseMoviesScreen extends StatefulWidget {
@@ -74,14 +75,8 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
         ),
       ),
       _buildBrowseContent(),
-      const Center(
-        child: Text(
-          'Profile Screen',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-          ),
-        ),
+      Builder(
+        builder: (context) => ProfileScreen(),
       ),
     ];
 
