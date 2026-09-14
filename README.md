@@ -1,4 +1,4 @@
-# moives_app2
+# movie_app
 
 A new Flutter project.
 
