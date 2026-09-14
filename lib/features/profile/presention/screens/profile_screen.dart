@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movie_app/features/profile/presention/screens/update_profile.dart';
 
-
 import '../../../../core/constants/app_colors.dart';
+
 class ProfileScreen extends StatefulWidget {
-ProfileScreen({super.key});
+  ProfileScreen({super.key});
   int selectedCategoryIndex = 0;
   int selectedNavIndex = 2;
 
@@ -44,21 +44,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: SafeArea(
         child: Column(
           children: [
-
             // =====================================================
             // PROFILE HEADER
             // =====================================================
-
             Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 16,
-                right: 16,
-              ),
+              padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   // Profile
                   Column(
                     children: [
@@ -86,19 +79,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
 
-                       SizedBox(height: 8),
+                      SizedBox(height: 8),
 
                       Text(
                         'John Safwat',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
+                        style: TextStyle(color: Colors.white, fontSize: 15),
                       ),
                     ],
                   ),
 
-                   SizedBox(width: 45),
+                  SizedBox(width: 45),
 
                   // Wish List number
                   Column(
@@ -123,11 +113,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
 
-                   SizedBox(width: 45),
-
+                  SizedBox(width: 45),
 
                   // History number
-                   Column(
+                  Column(
                     children: [
                       Text(
                         '10',
@@ -152,49 +141,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-             SizedBox(height: 18),
+            SizedBox(height: 18),
 
             // =====================================================
             // BUTTONS
             // =====================================================
-
             Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 children: [
-
                   // Edit Profile
                   Expanded(
-  flex: 2,
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const UpdateProfileScreen(),
-        ),
-      );
-    },
-    child: Container(
-      height: 46,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFC400),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child:  Center(
-        child: Text(
-          'Edit Profile',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    ),
-  ),
-),
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const UpdateProfileScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFC400),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Edit Profile',
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
 
-                 SizedBox(width: 8),
+                  SizedBox(width: 8),
 
                   // Exit
                   Expanded(
@@ -207,23 +191,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-
                           Text(
                             'Exit',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
 
                           SizedBox(width: 8),
 
                           // Mock icon
-                          Icon(
-                            Icons.logout,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                          Icon(Icons.logout, color: Colors.white, size: 20),
                         ],
                       ),
                     ),
@@ -232,15 +208,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-             SizedBox(height: 18),
+            SizedBox(height: 18),
 
             // =====================================================
             // WATCH LIST / HISTORY TABS
             // =====================================================
-
             Row(
               children: [
-
                 // WATCH LIST
                 Expanded(
                   child: GestureDetector(
@@ -251,7 +225,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     child: Column(
                       children: [
-
                         Icon(
                           Icons.list,
                           color: selectedTab == 0
@@ -260,14 +233,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           size: 28,
                         ),
 
-                         SizedBox(height: 3),
+                        SizedBox(height: 3),
 
-                         Text(
+                        Text(
                           'Watch List',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ],
                     ),
@@ -284,7 +254,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     child: Column(
                       children: [
-
                         Icon(
                           Icons.folder,
                           color: selectedTab == 1
@@ -293,14 +262,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           size: 27,
                         ),
 
-                         SizedBox(height: 3),
+                        SizedBox(height: 3),
 
-                         Text(
+                        Text(
                           'History',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ],
                     ),
@@ -309,15 +275,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-             SizedBox(height: 10),
+            SizedBox(height: 10),
 
             // =====================================================
             // YELLOW ACTIVE TAB LINE
             // =====================================================
-
             Row(
               children: [
-
                 Expanded(
                   child: Container(
                     height: 2,
@@ -339,25 +303,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
 
             // Blue divider
-            Container(
-              height: 1,
-              color: const Color(0xFF2196F3),
-            ),
+            Container(height: 1, color: const Color(0xFF2196F3)),
 
             // =====================================================
             // CONTENT
             // =====================================================
-
-            Expanded(
-              child: selectedTab == 0
-                  ? _watchList()
-                  : _history(),
-            ),
+            Expanded(child: selectedTab == 0 ? _watchList() : _history()),
           ],
         ),
       ),
-
-
     );
   }
 
@@ -367,7 +321,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _watchList() {
     return Center(
-      child: Image.asset('assets/images/pop_empty.png', width: 200, height: 200,)
+      child: Image.asset(
+        'assets/images/pop_empty.png',
+        width: 200,
+        height: 200,
+      ),
     );
   }
 
@@ -377,12 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _history() {
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(
-        8,
-        18,
-        8,
-        10,
-      ),
+      padding: const EdgeInsets.fromLTRB(8, 18, 8, 10),
 
       itemCount: movies.length,
 
@@ -412,11 +365,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       child: Stack(
         children: [
-
           // =====================================================
           // MOVIE POSTER
           // =====================================================
-
           Positioned.fill(
             child: Image.asset(
               imagePath,
@@ -427,11 +378,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 return Container(
                   color: const Color(0xFF303030),
                   child: const Center(
-                    child: Icon(
-                      Icons.movie,
-                      color: Colors.white54,
-                      size: 45,
-                    ),
+                    child: Icon(Icons.movie, color: Colors.white54, size: 45),
                   ),
                 );
               },
@@ -441,16 +388,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // =====================================================
           // RATING
           // =====================================================
-
           Positioned(
             top: 7,
             left: 7,
 
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 7,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
 
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.75),
@@ -460,23 +403,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-
                   Text(
                     '7.7',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
 
                   SizedBox(width: 3),
 
-                  Text(
-                    '⭐',
-                    style: TextStyle(
-                      fontSize: 13,
-                    ),
-                  ),
+                  Text('⭐', style: TextStyle(fontSize: 13)),
                 ],
               ),
             ),
