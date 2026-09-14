@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 
 
+
 class MovieHeaderWidget extends StatefulWidget {
   final String title;
   final String year;
