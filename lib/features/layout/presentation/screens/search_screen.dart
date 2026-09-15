@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:move_app/core/assets/app_image.dart';
-import 'package:move_app/features/layout/data/model/move_model.dart';
+
+import '../../../../core/assets/app_image.dart';
+import '../../data/model/move_model.dart';
+
 
 class SearchScreen extends StatefulWidget {
  const SearchScreen({super.key});

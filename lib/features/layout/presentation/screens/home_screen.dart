@@ -1,9 +1,12 @@
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:move_app/core/assets/app_image.dart';
-import 'package:move_app/core/theme/app_text_style.dart';
+
+import '../../../../core/assets/app_image.dart';
+import '../../../../core/theme/app_text_style.dart';
+
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key});

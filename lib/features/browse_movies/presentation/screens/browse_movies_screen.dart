@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:movie_app/core/constants/app_colors.dart';
+import 'package:movie_app/features/browse_movies/date/models/movie_model.dart';
+import 'package:movie_app/core/widgets/movie_card.dart';
+import 'package:movie_app/features/layout/presentation/screens/home_screen.dart';
+import 'package:movie_app/features/movie_details/presentation/screens/movie_details_screen.dart';
 
-
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/widgets/movie_card.dart';
-import '../../../movie_details/presentation/screens/movie_details_screen.dart';
+import '../../../layout/presentation/screens/search_screen.dart';
 import '../../../profile/presention/screens/profile_screen.dart';
-import '../../date/models/movie_model.dart';
 
 class BrowseMoviesScreen extends StatefulWidget {
   const BrowseMoviesScreen({super.key});
@@ -56,28 +57,10 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      const Center(
-        child: Text(
-          'Home Screen',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-          ),
-        ),
-      ),
-      const Center(
-        child: Text(
-          'Search Screen',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-          ),
-        ),
-      ),
+      HomeScreen(),
+     const SearchScreen(),
       _buildBrowseContent(),
-      Builder(
-        builder: (context) => ProfileScreen(),
-      ),
+      ProfileScreen(),
     ];
 
     return Scaffold(

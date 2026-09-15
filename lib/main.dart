@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // import المكتبة
+import 'package:movie_app/features/layout/presentation/screens/home_screen.dart';
 
 import 'features/browse_movies/presentation/screens/browse_movies_screen.dart';
 import 'firebase_options.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
           routes: {
             '/': (context) => const SplashScreen(),
             '/onboarding': (context) => const OnboardingScreen(),
-            '/home': (context) => const BrowseMoviesScreen(),
+            '/home': (context) =>  BrowseMoviesScreen()
           },
           theme: ThemeData(),
         );

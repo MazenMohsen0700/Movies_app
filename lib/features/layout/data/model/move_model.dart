@@ -1,4 +1,6 @@
-import 'package:move_app/core/assets/app_image.dart';
+
+
+import '../../../../core/assets/app_image.dart';
 
 class MoveModel {
   String name;

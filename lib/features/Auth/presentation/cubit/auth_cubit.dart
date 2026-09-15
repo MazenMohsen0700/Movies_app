@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'auth_state.dart';
 
@@ -50,5 +51,29 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logout() async {
     await auth.signOut();
+  }
+
+
+
+  Future<void> loginWithGoogle() async {
+    emit(AuthLoading());
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        emit(AuthInitial());
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthError(e.toString()));
+    }
   }
 }
