@@ -182,25 +182,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Exit
                   Expanded(
-                    child: Container(
-                      height: 46,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEF2525),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Exit',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
+                    child: InkWell( onTap:
+                    (){
+                      Navigator.pushNamed(context, '/login');
+                      print("object");
 
-                          SizedBox(width: 8),
+                    },
+                      child: Container(
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEF2525),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Exit',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
 
-                          // Mock icon
-                          Icon(Icons.logout, color: Colors.white, size: 20),
-                        ],
+                            SizedBox(width: 8),
+
+                            // Mock icon
+                            Icon(Icons.logout, color: Colors.white, size: 20),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -41,6 +41,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                 ),
                 hintText: "Search",
+                hintStyle:TextStyle(
+                  color: Colors.white30,
+                ),
                 suffixIcon: searchController.text.isNotEmpty
                     ? GestureDetector(
                         onTap: () {

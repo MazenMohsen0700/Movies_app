@@ -122,9 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 33.28),
                   BlocBuilder<AuthCubit, AuthState>(
                     builder: (context, state) {
-                      if (state is AuthLoading) {
-                        return CircularProgressIndicator(color: Appcolor.Mainyello);
-                      }
+
                       return Custombut(
                         text: 'Login',
                         onPressed: () {
@@ -202,15 +200,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 27),
 
-                  // زر Google يدعو الدالة من الـ Cubit مباشرة
-                  Custombut(
-                    text: 'Login with Google',
-                    logo: "assets/icons/icn_google.svg",
-                    onPressed: () {
-                      context.read<AuthCubit>().loginWithGoogle();
-                    },
+
+                  BlocBuilder<AuthCubit, AuthState>(
+                    builder:(context, state){
+                      if (state is AuthLoading) {
+                        return CircularProgressIndicator(color: Appcolor.Mainyello);
+                      }
+                      return Custombut(
+                        text: 'Login with Google',
+                        logo: "assets/icons/icn_google.svg",
+                        onPressed: () {
+                          context.read<AuthCubit>().loginWithGoogle();
+                        },
+                      );
+                    } ,
+
                   ),
-                  SizedBox(height: 14),
+                  SizedBox(height: 16),
                   LanguageSwitch(),
                 ],
               ),

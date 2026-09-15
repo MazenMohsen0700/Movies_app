@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:movie_app/features/Auth/presentation/screens/forget_screen.dart';
 
 import 'auth_state.dart';
 
@@ -74,6 +75,23 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthSuccess());
     } catch (e) {
       emit(AuthError(e.toString()));
+    }
+  }
+
+
+  Future<void> forgotPassword({
+    required String email,
+  }) async {
+    emit(AuthLoading());
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: email,
+      );
+
+      emit(AuthSuccess());
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(e.message ?? 'Something went wrong'));
     }
   }
 }
