@@ -29,31 +29,36 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
 
   final List<MovieModel> movies = const [
     MovieModel(
+      id: 10,
       imagePath: 'assets/similar/black_widow.png',
       rating: '7.7',
     ),
     MovieModel(
+      id: 11,
       imagePath: 'assets/similar/joker.png',
       rating: '7.7',
     ),
     MovieModel(
+      id: 12,
       imagePath: 'assets/similar/iron_man_3.png',
       rating: '7.7',
     ),
     MovieModel(
+      id: 13,
       imagePath: 'assets/similar/civil_war.png',
       rating: '7.7',
     ),
     MovieModel(
+      id: 14,
       imagePath: 'assets/similar/avengers2.png',
       rating: '7.7',
     ),
     MovieModel(
+      id: 15,
       imagePath: 'assets/images/Doctor Strange 1 (2).png',
       rating: '7.7',
     ),
   ];
-
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
@@ -211,7 +216,7 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                        const MovieDetailsScreen(),
+                         MovieDetailsScreen(movieId: movie.id,),
                       ),
                     );
                   },

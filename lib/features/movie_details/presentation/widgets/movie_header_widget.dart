@@ -4,8 +4,6 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 
-
-
 class MovieHeaderWidget extends StatefulWidget {
   final String title;
   final String year;
@@ -16,12 +14,12 @@ class MovieHeaderWidget extends StatefulWidget {
 
   const MovieHeaderWidget({
     super.key,
-    this.title = 'Doctor Strange in the Multiverse\nof Madness',
-    this.year = '2022',
-    this.imagePath = AppAssets.doctorStrange,
-    this.rating = '7.6',
-    this.likesCount = 15,
-    this.duration = '90',
+    required this.title,
+    required this.year,
+    required this.imagePath,
+    required this.rating,
+    required this.likesCount,
+    required this.duration,
   });
 
   @override
@@ -53,17 +51,13 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
           child: Stack(
             children: [
               Positioned.fill(
-                child: Image.asset(
+                child: Image.network(
                   widget.imagePath,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppColors.card,
-                      child: const Icon(
-                        Icons.movie_outlined,
-                        color: Colors.white24,
-                        size: 80,
-                      ),
+                    return Image.asset(
+                      AppAssets.doctorStrange,
+                      fit: BoxFit.cover,
                     );
                   },
                 ),
@@ -244,7 +238,9 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
                   },
                 ),
               ),
+
               const SizedBox(width: 10),
+
               Expanded(
                 child: MovieStatWidget(
                   icon: Icons.access_time_rounded,
@@ -252,7 +248,9 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
                   text: widget.duration,
                 ),
               ),
+
               const SizedBox(width: 10),
+
               Expanded(
                 child: MovieStatWidget(
                   icon: Icons.star_rounded,
@@ -278,8 +276,8 @@ class MovieStatWidget extends StatelessWidget {
     super.key,
     required this.icon,
     required this.iconColor,
-    required this.text,
     this.onTap,
+    required this.text,
   });
 
   @override
