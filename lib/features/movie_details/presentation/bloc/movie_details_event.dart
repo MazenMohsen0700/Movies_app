@@ -11,3 +11,8 @@ class GetSimilarMoviesEvent extends MovieDetailsEvent {
 
   GetSimilarMoviesEvent(this.movieId);
 }
+class GetParentalGuidesEvent extends MovieDetailsEvent {
+  final int movieId;
+
+  GetParentalGuidesEvent(this.movieId);
+}

@@ -26,4 +26,14 @@ class RemoteDataSource {
 
     return response;
   }
+  Future<Response> getMovieParentalGuides(int movieId) async {
+    final response = await dio.get(
+      'https://movies-api.accel.li/api/v2/movie_parental_guides.json',
+      queryParameters: {
+        'movie_id': movieId,
+      },
+    );
+
+    return response;
+  }
 }

@@ -218,24 +218,9 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
             children: [
               Expanded(
                 child: MovieStatWidget(
-                  icon: isLiked
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  iconColor: isLiked
-                      ? AppColors.red
-                      : AppColors.yellow,
+                  icon: Icons.favorite,
+                  iconColor: AppColors.yellow,
                   text: '$currentLikes',
-                  onTap: () {
-                    setState(() {
-                      isLiked = !isLiked;
-
-                      if (isLiked) {
-                        currentLikes++;
-                      } else {
-                        currentLikes--;
-                      }
-                    });
-                  },
                 ),
               ),
 

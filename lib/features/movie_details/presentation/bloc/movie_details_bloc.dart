@@ -12,6 +12,7 @@ class MovieDetailsBloc
       : super(MovieDetailsInitial()) {
     on<GetMovieDetailsEvent>(_onGetMovieDetails);
     on<GetSimilarMoviesEvent>(_onGetSimilarMovies);
+    on<GetParentalGuidesEvent>(_onGetParentalGuides);
   }
 
   Future<void> _onGetMovieDetails(
@@ -28,10 +29,12 @@ class MovieDetailsBloc
         MovieDetailsSuccess(
           movie: movie,
           similarLoading: true,
+          parentalLoading: true,
         ),
       );
 
       add(GetSimilarMoviesEvent(event.movieId));
+      add(GetParentalGuidesEvent(event.movieId));
     } catch (e) {
       emit(MovieDetailsError(e.toString()));
     }
@@ -41,29 +44,77 @@ class MovieDetailsBloc
       GetSimilarMoviesEvent event,
       Emitter<MovieDetailsState> emit,
       ) async {
-    final currentState = state;
-
-    if (currentState is! MovieDetailsSuccess) {
-      return;
-    }
-
     try {
       final movies =
       await getMovieDetailsUseCase.getSimilarMovies(
         event.movieId,
       );
 
+      print('SIMILAR MOVIES COUNT: ${movies.length}');
+
+      final currentState = state;
+
+      if (currentState is! MovieDetailsSuccess) {
+        return;
+      }
+
       emit(
         currentState.copyWith(
           similarMovies: movies,
           similarLoading: false,
+          similarError: null,
         ),
       );
     } catch (e) {
+      final currentState = state;
+
+      if (currentState is! MovieDetailsSuccess) {
+        return;
+      }
+
       emit(
         currentState.copyWith(
           similarLoading: false,
           similarError: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onGetParentalGuides(
+      GetParentalGuidesEvent event,
+      Emitter<MovieDetailsState> emit,
+      ) async {
+    try {
+      final guides =
+      await getMovieDetailsUseCase.getParentalGuides(
+        event.movieId,
+      );
+
+      final currentState = state;
+
+      if (currentState is! MovieDetailsSuccess) {
+        return;
+      }
+
+      emit(
+        currentState.copyWith(
+          parentalGuides: guides,
+          parentalLoading: false,
+          parentalError: null,
+        ),
+      );
+    } catch (e) {
+      final currentState = state;
+
+      if (currentState is! MovieDetailsSuccess) {
+        return;
+      }
+
+      emit(
+        currentState.copyWith(
+          parentalLoading: false,
+          parentalError: e.toString(),
         ),
       );
     }

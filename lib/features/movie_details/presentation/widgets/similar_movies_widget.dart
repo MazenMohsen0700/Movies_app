@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/widgets/movie_card.dart';
 import '../bloc/movie_details_bloc.dart';
 import '../bloc/movie_details_state.dart';
+import '../screens/movie_details_screen.dart';
 
 class SimilarMoviesWidget extends StatelessWidget {
   final int movieId;
@@ -79,10 +80,22 @@ class SimilarMoviesWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final movie = movies[index];
 
-                  return MovieCard(
-                    imagePath: movie.image,
-                    rating: movie.rating.toString(),
-                    isNetworkImage: true,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MovieDetailsScreen(
+                            movieId: movie.id,
+                          ),
+                        ),
+                      );
+                    },
+                    child: MovieCard(
+                      imagePath: movie.image,
+                      rating: movie.rating.toString(),
+                      isNetworkImage: true,
+                    ),
                   );
                 },
               ),

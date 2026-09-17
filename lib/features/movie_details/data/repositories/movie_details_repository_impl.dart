@@ -1,10 +1,12 @@
 import '../../domain/entities/cast_entity.dart';
 import '../../domain/entities/movie_details_entity.dart';
 import '../../domain/entities/similar_movie_entity.dart';
+import '../../domain/entities/parental_guide_entity.dart';
 import '../../domain/repositories/movie_details_repository.dart';
 import '../data_sources/remote_data_source.dart';
 import '../models/movie_details_model.dart';
 import '../models/similar_movie_model.dart';
+import '../models/parental_guide_model.dart';
 
 class MovieDetailsRepositoryImpl implements MovieDetailsRepository {
   final RemoteDataSource remoteDataSource;
@@ -45,11 +47,14 @@ class MovieDetailsRepositoryImpl implements MovieDetailsRepository {
   }
 
   @override
-  Future<List<SimilarMovieEntity>> getSimilarMovies(int movieId) async {
+  Future<List<SimilarMovieEntity>> getSimilarMovies(
+      int movieId,
+      ) async {
     final response =
     await remoteDataSource.getMovieSuggestions(movieId);
 
-    final moviesJson = response.data['data']['movies'] as List;
+    final moviesJson =
+    response.data['data']['movies'] as List;
 
     return moviesJson.map((movieJson) {
       final model = SimilarMovieModel.fromJson(movieJson);
@@ -59,6 +64,27 @@ class MovieDetailsRepositoryImpl implements MovieDetailsRepository {
         title: model.title,
         rating: model.rating,
         image: model.image,
+      );
+    }).toList();
+  }
+
+  @override
+  Future<List<ParentalGuideEntity>> getParentalGuides(
+      int movieId,
+      ) async {
+    final response =
+    await remoteDataSource.getMovieParentalGuides(movieId);
+
+    final guidesJson =
+    response.data['data']['parental_guides'] as List;
+
+    return guidesJson.map((guideJson) {
+      final model =
+      ParentalGuideModel.fromJson(guideJson);
+
+      return ParentalGuideEntity(
+        type: model.type,
+        text: model.text,
       );
     }).toList();
   }

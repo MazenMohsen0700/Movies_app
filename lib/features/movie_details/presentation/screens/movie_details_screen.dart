@@ -13,6 +13,7 @@ import '../widgets/screen_shots_widget.dart';
 import '../widgets/similar_movies_widget.dart';
 import '../widgets/cast_and_genres_widget.dart';
 
+
 class MovieDetailsScreen extends StatelessWidget {
   final int movieId;
 
