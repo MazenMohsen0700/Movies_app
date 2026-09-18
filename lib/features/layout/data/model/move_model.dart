@@ -1,10 +1,9 @@
-
-
 import '../../../../core/assets/app_image.dart';
 
 class MoveModel {
   String name;
   String image;
+
   MoveModel({required this.name, required this.image});
 
   static List<MoveModel> moves = [
@@ -14,6 +13,6 @@ class MoveModel {
     MoveModel(name: "Civil War", image: AppImage.posterCivilWar),
     MoveModel(name: "Avengers", image: AppImage.posterAvengers),
     MoveModel(name: "Doctor Strange", image: AppImage.posterDoctorStrange),
-    MoveModel(name: "batman", image: AppImage.posterBatman),
+    MoveModel(name: "Batman", image: AppImage.posterBatman),
   ];
 }

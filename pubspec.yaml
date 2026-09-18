@@ -45,6 +45,10 @@ dependencies:
   dio:
   injectable:
   get_it:
+  cloud_firestore: ^6.10.0
+  shared_preferences: ^2.5.5
+  intl:
+  flutter_localization: ^0.4.1
 
 
 dev_dependencies:

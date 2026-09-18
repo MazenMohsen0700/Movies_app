@@ -24,7 +24,7 @@ class BrowseMoviesScreen extends StatefulWidget {
 }
 
 class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
-  int selectedNavIndex = 2;
+  int selectedNavIndex = 0;
 
   @override
   Widget build(BuildContext context) {

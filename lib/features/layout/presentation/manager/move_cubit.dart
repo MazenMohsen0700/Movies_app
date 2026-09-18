@@ -14,17 +14,42 @@ class MoveCubit extends Cubit<MoveState> {
   MoveCubit(this.moveUseCase) : super(MoveState());
 
   Future<void> getMove(String genre) async {
-    if (moveUseCase == null) {
-      return;
-    }
     emit(MoveState(moveState: LodingState()));
-    var result = await moveUseCase!.call(genre);
-    switch (result) {
-      case SuccessState<List<MoveEntity>>():
-        return emit(MoveState(moveState: Success(data: result.data)));
 
-      case ErrorState<List<MoveEntity>>():
-        emit(MoveState(moveState: Errorr(error: result.errorMessage)));
+    try {
+      final result = await moveUseCase!.call(genre);
+
+      print('MOVIE RESULT: $result');
+
+      switch (result) {
+        case SuccessState<List<MoveEntity>>():
+          emit(
+            MoveState(
+              moveState: Success(data: result.data),
+            ),
+          );
+
+        case ErrorState<List<MoveEntity>>():
+          print('MOVIE ERROR: ${result.errorMessage}');
+
+          emit(
+            MoveState(
+              moveState: Errorr(
+                error: result.errorMessage,
+              ),
+            ),
+          );
+      }
+    } catch (e) {
+      print('MOVIE EXCEPTION: $e');
+
+      emit(
+        MoveState(
+          moveState: Errorr(
+            error: e.toString(),
+          ),
+        ),
+      );
     }
   }
 }
