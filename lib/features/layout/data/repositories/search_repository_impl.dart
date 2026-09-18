@@ -9,16 +9,19 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl(this.remoteDataSource);
 
   @override
+  @override
   Future<List<SearchMovieEntity>> searchMovies(String query) async {
-    final response =
-    await remoteDataSource.searchMovies(query);
+    final response = await remoteDataSource.searchMovies(query);
 
-    final moviesJson =
-    response.data['data']['movies'] as List;
+
+    final moviesJson = response.data?['data']?['movies'] as List<dynamic>?;
+
+    if (moviesJson == null) {
+      return [];
+    }
 
     return moviesJson.map((movieJson) {
-      final model =
-      SearchMovieModel.fromJson(movieJson);
+      final model = SearchMovieModel.fromJson(movieJson);
 
       return SearchMovieEntity(
         id: model.id,
