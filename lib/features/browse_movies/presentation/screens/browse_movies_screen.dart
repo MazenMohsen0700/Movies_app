@@ -28,83 +28,89 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        final remoteDataSource = RemoteDataSource();
+    return Localizations.override(
+      context: context,
+      locale: const Locale('en'),
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: BlocProvider(
+          create: (_) {
+            final remoteDataSource = RemoteDataSource();
 
-        final repository = BrowseMoviesRepositoryImpl(
-          remoteDataSource,
-        );
+            final repository = BrowseMoviesRepositoryImpl(
+              remoteDataSource,
+            );
 
-        final useCase = GetMoviesByGenreUseCase(
-          repository,
-        );
+            final useCase = GetMoviesByGenreUseCase(
+              repository,
+            );
 
-        return BrowseMoviesBloc(useCase)
-          ..add(GetGenresEvent());
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: IndexedStack(
-          index: selectedNavIndex,
-          children: [
-            HomeScreen(),
-            const SearchScreen(),
-            _buildBrowseContent(),
-            ProfileScreen(),
-          ],
-        ),
-        bottomNavigationBar: Container(
-          margin: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(25),
-            child: BottomNavigationBar(
-              currentIndex: selectedNavIndex,
-              onTap: (index) {
-                setState(() {
-                  selectedNavIndex = index;
-                });
-              },
-              backgroundColor: Colors.transparent,
-              type: BottomNavigationBarType.fixed,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              selectedItemColor: AppColors.yellow,
-              unselectedItemColor: Colors.white,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.home_filled,
-                    size: 28,
-                  ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.search,
-                    size: 28,
-                  ),
-                  label: 'Search',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.folder_copy_rounded,
-                    size: 26,
-                  ),
-                  label: 'Browse',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.account_circle,
-                    size: 28,
-                  ),
-                  label: 'Profile',
-                ),
+            return BrowseMoviesBloc(useCase)..add(GetGenresEvent());
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.background,
+            body: IndexedStack(
+              index: selectedNavIndex,
+              children: [
+                HomeScreen(),
+                const SearchScreen(),
+                _buildBrowseContent(),
+                ProfileScreen(),
               ],
+            ),
+            bottomNavigationBar: Container(
+              margin: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.card,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: BottomNavigationBar(
+                  currentIndex: selectedNavIndex,
+                  onTap: (index) {
+                    setState(() {
+                      selectedNavIndex = index;
+                    });
+                  },
+                  backgroundColor: Colors.transparent,
+                  type: BottomNavigationBarType.fixed,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  selectedItemColor: AppColors.yellow,
+                  unselectedItemColor: Colors.white,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.home_filled,
+                        size: 28,
+                      ),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.search,
+                        size: 28,
+                      ),
+                      label: 'Search',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.folder_copy_rounded,
+                        size: 26,
+                      ),
+                      label: 'Browse',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.account_circle,
+                        size: 28,
+                      ),
+                      label: 'Profile',
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -141,7 +147,6 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
             return Column(
               children: [
                 const SizedBox(height: 12),
-
                 SizedBox(
                   height: 42,
                   child: ListView.separated(
@@ -200,9 +205,7 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
                     },
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 Expanded(
                   child: movies.isEmpty
                       ? const Center(
@@ -234,10 +237,9 @@ class _BrowseMoviesScreenState extends State<BrowseMoviesScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MovieDetailsScreen(
-                                    movieId: movie.id,
-                                  ),
+                              builder: (context) => MovieDetailsScreen(
+                                movieId: movie.id,
+                              ),
                             ),
                           );
                         },

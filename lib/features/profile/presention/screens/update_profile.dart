@@ -10,46 +10,11 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-  final ProfileRemoteDataSource profileDataSource =
-  ProfileRemoteDataSource();
+  final ProfileRemoteDataSource profileDataSource = ProfileRemoteDataSource();
 
-  @override
-  void initState() {
-    super.initState();
-    _loadProfile();
-  }
+  final TextEditingController usernameController = TextEditingController();
 
-  Future<void> _loadProfile() async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user == null) {
-      return;
-    }
-
-    try {
-      final profile = await profileDataSource.getProfile(
-        userId: user.uid,
-      );
-
-      if (profile == null || !mounted) {
-        return;
-      }
-
-      setState(() {
-        usernameController.text = profile['username'] ?? '';
-        phoneController.text = profile['phone'] ?? '';
-        selectedAvatar = profile['selectedAvatar'] ?? 0;
-      });
-    } catch (e) {
-      debugPrint('Load profile error: $e');
-    }
-  }
-
-  final TextEditingController usernameController =
-  TextEditingController(text: 'John Safwat');
-
-  final TextEditingController phoneController =
-  TextEditingController(text: '01200000000');
+  final TextEditingController phoneController = TextEditingController();
 
   final List<String> avatars = [
     'assets/images/profile1.png',
@@ -65,6 +30,43 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   int selectedAvatar = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return;
+    }
+
+    try {
+      await user.reload();
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      final profile = await profileDataSource.getProfile(userId: user.uid);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        usernameController.text =
+            currentUser?.displayName ?? profile?['username'] ?? '';
+
+        phoneController.text = profile?['phone'] ?? '';
+
+        selectedAvatar = profile?['selectedAvatar'] ?? 0;
+      });
+    } catch (e) {
+      debugPrint('Load profile error: $e');
+    }
+  }
+
   void _showAvatarPicker() {
     showModalBottomSheet(
       context: context,
@@ -72,32 +74,23 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       isScrollControlled: true,
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.fromLTRB(
-            14,
-            14,
-            14,
-            20,
-          ),
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 20),
           decoration: const BoxDecoration(
             color: Color(0xFF292A2A),
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: GridView.builder(
             shrinkWrap: true,
             itemCount: avatars.length,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
               childAspectRatio: 1,
             ),
             itemBuilder: (context, index) {
-              final bool isSelected =
-                  selectedAvatar == index;
+              final bool isSelected = selectedAvatar == index;
 
               return GestureDetector(
                 onTap: () {
@@ -122,8 +115,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     child: Image.asset(
                       avatars[index],
                       fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, error, stackTrace) {
+                      errorBuilder: (context, error, stackTrace) {
                         return const Icon(
                           Icons.person,
                           color: Colors.white,
@@ -141,7 +133,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
   }
 
-  // DELETE ACCOUNT
   Future<void> _deleteAccount() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -158,21 +149,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           backgroundColor: const Color(0xFF292A2A),
           title: const Text(
             'Delete account',
-            style: TextStyle(
-              color: Colors.white,
-            ),
+            style: TextStyle(color: Colors.white),
           ),
           content: TextField(
             controller: passwordController,
             obscureText: true,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
+            style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               hintText: 'Enter your password',
-              hintStyle: TextStyle(
-                color: Colors.grey,
-              ),
+              hintStyle: TextStyle(color: Colors.grey),
             ),
           ),
           actions: [
@@ -180,26 +165,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
-              ),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(
-                  context,
-                  passwordController.text,
-                );
+                Navigator.pop(context, passwordController.text);
               },
-              child: const Text(
-                'Delete',
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -218,9 +190,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         password: password,
       );
 
-      await user.reauthenticateWithCredential(
-        credential,
-      );
+      await user.reauthenticateWithCredential(credential);
 
       await user.delete();
 
@@ -232,8 +202,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
       String message;
 
-      if (e.code == 'wrong-password' ||
-          e.code == 'invalid-credential') {
+      if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
         message = 'Wrong password';
       } else if (e.code == 'requires-recent-login') {
         message = 'Please login again and try again';
@@ -241,21 +210,66 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         message = e.message ?? 'Delete account failed';
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Delete account failed: $e',
-          ),
-        ),
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Delete account failed: $e')));
+    }
+  }
+
+  Future<void> _updateProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return;
+    }
+
+    final newUsername = usernameController.text.trim();
+    final newPhone = phoneController.text.trim();
+
+    if (newUsername.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter your name')));
+      return;
+    }
+
+    try {
+      await user.updateDisplayName(newUsername);
+
+      await user.reload();
+
+      await profileDataSource.updateProfile(
+        userId: user.uid,
+        username: newUsername,
+        phone: newPhone,
+        selectedAvatar: selectedAvatar,
       );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully')),
+      );
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Update failed')));
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Update failed: $e')));
     }
   }
 
@@ -263,7 +277,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void dispose() {
     usernameController.dispose();
     phoneController.dispose();
-
     super.dispose();
   }
 
@@ -275,10 +288,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               child: Row(
                 children: [
                   GestureDetector(
@@ -307,7 +317,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ),
             ),
 
-            // CURRENT AVATAR
             GestureDetector(
               onTap: _showAvatarPicker,
               child: Container(
@@ -321,8 +330,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   child: Image.asset(
                     avatars[selectedAvatar],
                     fit: BoxFit.cover,
-                    errorBuilder:
-                        (context, error, stackTrace) {
+                    errorBuilder: (context, error, stackTrace) {
                       return const Icon(
                         Icons.person,
                         color: Colors.white,
@@ -336,23 +344,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
             const SizedBox(height: 25),
 
-            // USERNAME
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: TextFormField(
                 controller: usernameController,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 15),
                 cursorColor: const Color(0xFFFFC400),
                 decoration: InputDecoration(
                   hintText: 'Username',
-                  hintStyle: const TextStyle(
-                    color: Colors.grey,
-                  ),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   prefixIcon: const Icon(
                     Icons.person,
                     color: Colors.grey,
@@ -360,10 +360,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   filled: true,
                   fillColor: const Color(0xFF1B1B1B),
-                  contentPadding:
-                  const EdgeInsets.symmetric(
-                    vertical: 13,
-                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 13),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(11),
                     borderSide: BorderSide.none,
@@ -385,24 +382,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
             const SizedBox(height: 14),
 
-            // PHONE
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: TextFormField(
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
+                style: const TextStyle(color: Colors.white, fontSize: 15),
                 cursorColor: const Color(0xFFFFC400),
                 decoration: InputDecoration(
                   hintText: 'Phone Number',
-                  hintStyle: const TextStyle(
-                    color: Colors.grey,
-                  ),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   prefixIcon: const Icon(
                     Icons.phone,
                     color: Colors.grey,
@@ -410,10 +399,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   filled: true,
                   fillColor: const Color(0xFF1B1B1B),
-                  contentPadding:
-                  const EdgeInsets.symmetric(
-                    vertical: 13,
-                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 13),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(11),
                     borderSide: BorderSide.none,
@@ -433,24 +419,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ),
             ),
 
-            // RESET PASSWORD
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  top: 22,
-                ),
+                padding: const EdgeInsets.only(left: 16, top: 22),
                 child: GestureDetector(
-                  onTap: () {
-                    // Reset password action
-                  },
+                  onTap: () {},
                   child: const Text(
                     'Reset Password',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                 ),
               ),
@@ -458,15 +435,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
             const Spacer(),
 
-            // DELETE ACCOUNT
             GestureDetector(
               onTap: _deleteAccount,
               child: Container(
                 width: double.infinity,
                 height: 55,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   color: const Color(0xffE82626),
                   borderRadius: BorderRadius.circular(15),
@@ -486,52 +460,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
             const SizedBox(height: 12),
 
-            // UPDATE BUTTON
             GestureDetector(
-              onTap: () async {
-                final user =
-                    FirebaseAuth.instance.currentUser;
-
-                if (user == null) {
-                  return;
-                }
-
-                try {
-                  await profileDataSource.updateProfile(
-                    userId: user.uid,
-                    username:
-                    usernameController.text.trim(),
-                    phone: phoneController.text.trim(),
-                    selectedAvatar: selectedAvatar,
-                  );
-
-                  if (!mounted) return;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Profile updated successfully',
-                      ),
-                    ),
-                  );
-                } catch (e) {
-                  if (!mounted) return;
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Update failed: $e',
-                      ),
-                    ),
-                  );
-                }
-              },
+              onTap: _updateProfile,
               child: Container(
                 width: double.infinity,
                 height: 50,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFC400),
                   borderRadius: BorderRadius.circular(12),

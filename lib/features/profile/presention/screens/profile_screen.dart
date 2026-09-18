@@ -61,6 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadHistory();
   }
 
+
   Future<void> _loadProfile() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -68,24 +69,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
 
-
     try {
-      final profile = await profileDataSource.getProfile(
-        userId: user.uid,
-      );
+      await user.reload();
 
-      if (profile == null || !mounted) {
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      if (!mounted) {
         return;
       }
 
       setState(() {
-        username = profile['username'] ?? 'John Safwat';
-        selectedAvatar = profile['selectedAvatar'] ?? 0;
+        username = currentUser?.displayName ?? 'John Safwat';
       });
     } catch (e) {
       debugPrint('Load profile error: $e');
     }
   }
+
+
   Future<void> _loadHistory() async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -464,11 +465,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-            // Blue divider
-            Container(
-              height: 1,
-              color: const Color(0xFF2196F3),
-            ),
+
 
             // =====================================================
             // CONTENT
