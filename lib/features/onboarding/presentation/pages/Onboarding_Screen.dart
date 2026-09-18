@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import 'OnboardingPageFive.dart';
 import 'OnboardingPageFour.dart';
@@ -9,6 +11,7 @@ import 'OnboardingPageTwo.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
+
   static const String RouteName = "/onboarding";
 
   @override
@@ -17,6 +20,7 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
+
   void _nextPage() {
     _pageController.nextPage(
       duration: const Duration(milliseconds: 300),
@@ -31,8 +35,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  void _finish() {
-    Navigator.pushReplacementNamed(context, "home_screen");
+  Future<void> _finish() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool('onboarding_seen', true);
+
+    final saved = prefs.getBool('onboarding_seen');
+
+    print('ONBOARDING SAVED: $saved');
+
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override

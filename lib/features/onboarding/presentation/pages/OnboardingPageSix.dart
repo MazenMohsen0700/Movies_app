@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../Auth/presentation/screens/login_screen.dart';
 
 class OnboardingPageSix extends StatelessWidget {
   final VoidCallback? onFinishPressed;
@@ -64,9 +63,7 @@ class OnboardingPageSix extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-                      },
+                      onPressed: onFinishPressed,
                       child: const Text(
                         "Finish",
                         style: TextStyle(

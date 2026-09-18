@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-
+import '../../data/data_sources/watchlist_remote_data_source.dart';
 
 class MovieHeaderWidget extends StatefulWidget {
+  final int movieId;
   final String title;
   final String year;
   final String imagePath;
@@ -16,12 +18,13 @@ class MovieHeaderWidget extends StatefulWidget {
 
   const MovieHeaderWidget({
     super.key,
-    this.title = 'Doctor Strange in the Multiverse\nof Madness',
-    this.year = '2022',
-    this.imagePath = AppAssets.doctorStrange,
-    this.rating = '7.6',
-    this.likesCount = 15,
-    this.duration = '90',
+    required this.movieId,
+    required this.title,
+    required this.year,
+    required this.imagePath,
+    required this.rating,
+    required this.likesCount,
+    required this.duration,
   });
 
   @override
@@ -32,6 +35,8 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
   bool isSaved = false;
   bool isLiked = false;
   late int currentLikes;
+  final WatchlistRemoteDataSource watchlistDataSource =
+  WatchlistRemoteDataSource();
 
   @override
   void initState() {
@@ -53,17 +58,13 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
           child: Stack(
             children: [
               Positioned.fill(
-                child: Image.asset(
+                child: Image.network(
                   widget.imagePath,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: AppColors.card,
-                      child: const Icon(
-                        Icons.movie_outlined,
-                        color: Colors.white24,
-                        size: 80,
-                      ),
+                    return Image.asset(
+                      AppAssets.doctorStrange,
+                      fit: BoxFit.cover,
                     );
                   },
                 ),
@@ -109,10 +110,39 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
                 child: CircleAvatar(
                   backgroundColor: Colors.black.withOpacity(0.4),
                   child: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isSaved = !isSaved;
-                      });
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+
+                      if (user == null) {
+                        return;
+                      }
+
+                      try {
+                        if (isSaved) {
+                          await watchlistDataSource.removeFromWatchlist(
+                            userId: user.uid,
+                            movieId: widget.movieId,
+                          );
+                        } else {
+                          await watchlistDataSource.addToWatchlist(
+                            userId: user.uid,
+                            movieId: widget.movieId,
+                            title: widget.title,
+                            imagePath: widget.imagePath,
+                          );
+                        }
+
+                        setState(() {
+                          isSaved = !isSaved;
+                        });
+                      } catch (e) {
+                        debugPrint('Watchlist error: $e');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Watchlist error: $e'),
+                          ),
+                        );
+                      }
                     },
                     icon: Icon(
                       isSaved
@@ -224,27 +254,14 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
             children: [
               Expanded(
                 child: MovieStatWidget(
-                  icon: isLiked
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  iconColor: isLiked
-                      ? AppColors.red
-                      : AppColors.yellow,
+                  icon: Icons.favorite,
+                  iconColor: AppColors.yellow,
                   text: '$currentLikes',
-                  onTap: () {
-                    setState(() {
-                      isLiked = !isLiked;
-
-                      if (isLiked) {
-                        currentLikes++;
-                      } else {
-                        currentLikes--;
-                      }
-                    });
-                  },
                 ),
               ),
+
               const SizedBox(width: 10),
+
               Expanded(
                 child: MovieStatWidget(
                   icon: Icons.access_time_rounded,
@@ -252,7 +269,9 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
                   text: widget.duration,
                 ),
               ),
+
               const SizedBox(width: 10),
+
               Expanded(
                 child: MovieStatWidget(
                   icon: Icons.star_rounded,
@@ -278,8 +297,8 @@ class MovieStatWidget extends StatelessWidget {
     super.key,
     required this.icon,
     required this.iconColor,
-    required this.text,
     this.onTap,
+    required this.text,
   });
 
   @override

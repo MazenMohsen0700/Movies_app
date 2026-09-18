@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_strings.dart';
 
-
 class ScreenShotsWidget extends StatelessWidget {
-  const ScreenShotsWidget({super.key});
+  final String screenshot1;
+  final String screenshot2;
+  final String screenshot3;
 
-  final List<String> screenshots = const [
-    'assets/Screen/shot1.png',
-    'assets/Screen/shot2.png',
-    'assets/Screen/shot3.png',
-  ];
+  const ScreenShotsWidget({
+    super.key,
+    required this.screenshot1,
+    required this.screenshot2,
+    required this.screenshot3,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final List<String> screenshots = [
+      screenshot1,
+      screenshot2,
+      screenshot3,
+    ];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -40,7 +48,7 @@ class ScreenShotsWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 image: DecorationImage(
-                  image: AssetImage(imagePath),
+                  image: NetworkImage(imagePath),
                   fit: BoxFit.cover,
                 ),
               ),
