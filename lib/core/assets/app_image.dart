@@ -8,16 +8,6 @@ class AppImage {
   static const String watchNow = '$_imagesPath/watch_now.png';
   static const String homeBackdrop = '$_imagesPath/home_backdrop.png';
 
-  static const String poster1917 = '$_imagesPath/poster_1917.png';
-  static const String posterCaptainAmerica = '$_imagesPath/poster_captain_america.png';
-  static const String posterBabyDriver = '$_imagesPath/poster_baby_driver.png';
-  static const String posterBatman = '$_imagesPath/poster_batman.png';
-  static const String posterBlackWidow = '$_imagesPath/poster_black_widow.png';
-  static const String posterIronMan3 = '$_imagesPath/poster_iron_man_3.png';
-  static const String posterCivilWar = '$_imagesPath/poster_civil_war.png';
-  static const String posterAvengers = '$_imagesPath/poster_avengers.png';
-  static const String posterDoctorStrange = '$_imagesPath/poster_doctor_strange.png';
-
   static const String emptySearch = '$_imagesPath/empty_search.png';
   static const String bgMove = '$_imagesPath/bg_move.png';
 
@@ -32,4 +22,5 @@ class AppImage {
   static const String icProfile = '$_iconsPath/ic_profile.svg';
   static const String icBack = '$_iconsPath/ic_back.svg';
   static const String icBookmark = '$_iconsPath/ic_bookmark.svg';
+  static const String starIcn = "assets/icons/star_icn.png";
 }
