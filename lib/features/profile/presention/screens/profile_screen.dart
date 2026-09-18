@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:movie_app/features/layout/data/data_sources/profile_remote_data_source.dart';
+import 'package:movie_app/features/movie_details/data/data_sources/watchlist_remote_data_source.dart';
+import 'package:movie_app/features/movie_details/data/data_sources/history_remote_data_sourse.dart';
 import 'package:movie_app/features/profile/presention/screens/update_profile.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
+
   int selectedCategoryIndex = 0;
   int selectedNavIndex = 2;
 
@@ -14,13 +18,150 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileRemoteDataSource profileDataSource =
+  ProfileRemoteDataSource();
+
+  final WatchlistRemoteDataSource watchlistDataSource =
+  WatchlistRemoteDataSource();
+
+  final HistoryRemoteDataSource historyDataSource =
+  HistoryRemoteDataSource();
+
+  String username = 'John Safwat';
+  int selectedAvatar = 0;
+
+  final List<String> avatars = [
+    'assets/images/profile1.png',
+    'assets/images/profile2.png',
+    'assets/images/profile3.png',
+    'assets/images/profile4.png',
+    'assets/images/profile5.png',
+    'assets/images/profile6.png',
+    'assets/images/profile7.png',
+    'assets/images/profile8.png',
+    'assets/images/profile9.png',
+  ];
+
   // 0 = Watch List
   // 1 = History
   int selectedTab = 0;
+
+  List<Map<String, dynamic>> watchlistMovies = [];
+
+  bool isLoadingWatchlist = true;
+
+  List<Map<String, dynamic>> historyMovies = [];
+  bool isLoadingHistory = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+    _loadWatchlist();
+    _loadHistory();
+  }
+
+  Future<void> _loadProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return;
+    }
+
+
+    try {
+      final profile = await profileDataSource.getProfile(
+        userId: user.uid,
+      );
+
+      if (profile == null || !mounted) {
+        return;
+      }
+
+      setState(() {
+        username = profile['username'] ?? 'John Safwat';
+        selectedAvatar = profile['selectedAvatar'] ?? 0;
+      });
+    } catch (e) {
+      debugPrint('Load profile error: $e');
+    }
+  }
+  Future<void> _loadHistory() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      if (mounted) {
+        setState(() {
+          isLoadingHistory = false;
+        });
+      }
+      return;
+    }
+
+    try {
+      final movies = await historyDataSource.getHistory(
+        userId: user.uid,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        historyMovies = movies;
+        isLoadingHistory = false;
+      });
+    } catch (e) {
+      debugPrint('Load history error: $e');
+
+      if (!mounted) return;
+
+      setState(() {
+        isLoadingHistory = false;
+      });
+    }
+  }
+
+  Future<void> _loadWatchlist() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      if (mounted) {
+        setState(() {
+          isLoadingWatchlist = false;
+        });
+      }
+      return;
+    }
+
+    try {
+      final movies = await watchlistDataSource.getWatchlist(
+        userId: user.uid,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        watchlistMovies = movies;
+        isLoadingWatchlist = false;
+      });
+    } catch (e) {
+      debugPrint('Load watchlist error: $e');
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        isLoadingWatchlist = false;
+      });
+    }
+  }
+
   int selectedCategoryIndex = 0;
   int selectedNavIndex = 2;
 
-  // Mock movie assets
+  // Mock movie assets for History
   final List<String> movies = [
     'assets/images/black_widow2.png',
     'assets/images/hobbs.png',
@@ -40,7 +181,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF111111),
-
       body: SafeArea(
         child: Column(
           children: [
@@ -48,7 +188,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // PROFILE HEADER
             // =====================================================
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+              padding: const EdgeInsets.only(
+                top: 20,
+                left: 16,
+                right: 16,
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -64,12 +208,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: CircleAvatar(
                           child: Image.asset(
-                            'assets/images/profile1.png',
+                            avatars[selectedAvatar],
                             fit: BoxFit.cover,
-
-                            // Mock if asset doesn't exist
                             errorBuilder: (context, error, stackTrace) {
-                              return Icon(
+                              return const Icon(
                                 Icons.person,
                                 color: Colors.white,
                                 size: 60,
@@ -79,59 +221,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
 
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
 
                       Text(
-                        'John Safwat',
-                        style: TextStyle(color: Colors.white, fontSize: 15),
+                        username,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
                       ),
                     ],
                   ),
 
-                  SizedBox(width: 45),
+                  const SizedBox(width: 45),
 
                   // Wish List number
                   Column(
                     children: [
                       Text(
-                        '12',
-                        style: TextStyle(
+                        '${watchlistMovies.length}',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
+                      const SizedBox(height: 8),
+                      const Text(
                         'Wish List',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
 
-                  SizedBox(width: 45),
+                  const SizedBox(width: 45),
 
                   // History number
                   Column(
                     children: [
-                      Text(
-                        '10',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
+                  Text(
+                  '${historyMovies.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+
+                      const SizedBox(height: 8),
+                      const Text(
                         'History',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -141,26 +288,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            SizedBox(height: 18),
+            const SizedBox(height: 18),
 
             // =====================================================
             // BUTTONS
             // =====================================================
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 children: [
                   // Edit Profile
                   Expanded(
                     flex: 2,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const UpdateProfileScreen(),
+                            builder: (context) =>
+                            const UpdateProfileScreen(),
                           ),
                         );
+
+                        _loadProfile();
                       },
                       child: Container(
                         height: 46,
@@ -168,26 +318,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: const Color(0xFFFFC400),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Center(
+                        child: const Center(
                           child: Text(
                             'Edit Profile',
-                            style: TextStyle(color: Colors.black, fontSize: 16),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
 
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
 
                   // Exit
                   Expanded(
-                    child: InkWell( onTap:
-                    (){
-                      Navigator.pushNamed(context, '/login');
-                      print("object");
-
-                    },
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/login');
+                        print("object");
+                      },
                       child: Container(
                         height: 46,
                         decoration: BoxDecoration(
@@ -196,16 +348,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Text(
                               'Exit',
-                              style: TextStyle(color: Colors.white, fontSize: 16),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
-
                             SizedBox(width: 8),
-
-                            // Mock icon
-                            Icon(Icons.logout, color: Colors.white, size: 20),
+                            Icon(
+                              Icons.logout,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ],
                         ),
                       ),
@@ -215,14 +371,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            SizedBox(height: 18),
+            const SizedBox(height: 18),
 
             // =====================================================
             // WATCH LIST / HISTORY TABS
             // =====================================================
             Row(
               children: [
-                // WATCH LIST
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
@@ -239,19 +394,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               : Colors.white,
                           size: 28,
                         ),
-
-                        SizedBox(height: 3),
-
-                        Text(
+                        const SizedBox(height: 3),
+                        const Text(
                           'Watch List',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
 
-                // HISTORY
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
@@ -268,12 +423,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               : Colors.white,
                           size: 27,
                         ),
-
-                        SizedBox(height: 3),
-
-                        Text(
+                        const SizedBox(height: 3),
+                        const Text(
                           'History',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
@@ -282,7 +438,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             // =====================================================
             // YELLOW ACTIVE TAB LINE
@@ -297,7 +453,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         : Colors.transparent,
                   ),
                 ),
-
                 Expanded(
                   child: Container(
                     height: 2,
@@ -310,12 +465,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
 
             // Blue divider
-            Container(height: 1, color: const Color(0xFF2196F3)),
+            Container(
+              height: 1,
+              color: const Color(0xFF2196F3),
+            ),
 
             // =====================================================
             // CONTENT
             // =====================================================
-            Expanded(child: selectedTab == 0 ? _watchList() : _history()),
+            Expanded(
+              child: selectedTab == 0
+                  ? _watchList()
+                  : _history(),
+            ),
           ],
         ),
       ),
@@ -327,11 +489,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // =============================================================
 
   Widget _watchList() {
-    return Center(
-      child: Image.asset(
-        'assets/images/pop_empty.png',
-        width: 200,
-        height: 200,
+    if (isLoadingWatchlist) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFFFFC400),
+        ),
+      );
+    }
+
+    if (watchlistMovies.isEmpty) {
+      return Center(
+        child: Image.asset(
+          'assets/images/pop_empty.png',
+          width: 200,
+          height: 200,
+        ),
+      );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(8, 18, 8, 10),
+      itemCount: watchlistMovies.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 14,
+        childAspectRatio: 0.62,
+      ),
+      itemBuilder: (context, index) {
+        final movie = watchlistMovies[index];
+
+        return _watchlistMovieCard(movie);
+      },
+    );
+  }
+
+  Widget _watchlistMovieCard(Map<String, dynamic> movie) {
+    final String imagePath = movie['imagePath'] ?? '';
+    final String title = movie['title'] ?? '';
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              imagePath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: const Color(0xFF303030),
+                  child: const Center(
+                    child: Icon(
+                      Icons.movie,
+                      color: Colors.white54,
+                      size: 45,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          Positioned(
+            left: 7,
+            right: 7,
+            bottom: 7,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              color: Colors.black.withOpacity(0.75),
+              child: Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -341,27 +579,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // =============================================================
 
   Widget _history() {
+    if (isLoadingHistory) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFFFFC400),
+        ),
+      );
+    }
+
+    if (historyMovies.isEmpty) {
+      return Center(
+        child: Image.asset(
+          'assets/images/pop_empty.png',
+          width: 200,
+          height: 200,
+        ),
+      );
+    }
+
     return GridView.builder(
       padding: const EdgeInsets.fromLTRB(8, 18, 8, 10),
-
-      itemCount: movies.length,
-
+      itemCount: historyMovies.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-
         crossAxisSpacing: 12,
         mainAxisSpacing: 14,
-
-        // Poster ratio
         childAspectRatio: 0.62,
       ),
-
       itemBuilder: (context, index) {
-        return _movieCard(movies[index]);
+        final movie = historyMovies[index];
+
+        return _historyMovieCard(movie);
       },
     );
   }
+  Widget _historyMovieCard(Map<String, dynamic> movie) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              movie['imagePath'] ?? '',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Center(
+                  child: Icon(
+                    Icons.broken_image,
+                    color: Colors.white,
+                  ),
+                );
+              },
+            ),
+          ),
 
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.black54,
+              child: Text(
+                movie['title'] ?? '',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   // =============================================================
   // MOVIE CARD
   // =============================================================
@@ -369,55 +663,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _movieCard(String imagePath) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
-
       child: Stack(
         children: [
-          // =====================================================
-          // MOVIE POSTER
-          // =====================================================
           Positioned.fill(
             child: Image.asset(
               imagePath,
               fit: BoxFit.cover,
-
-              // Mock poster
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   color: const Color(0xFF303030),
                   child: const Center(
-                    child: Icon(Icons.movie, color: Colors.white54, size: 45),
+                    child: Icon(
+                      Icons.movie,
+                      color: Colors.white54,
+                      size: 45,
+                    ),
                   ),
                 );
               },
             ),
           ),
 
-          // =====================================================
-          // RATING
-          // =====================================================
           Positioned(
             top: 7,
             left: 7,
-
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-
+              padding: const EdgeInsets.symmetric(
+                horizontal: 7,
+                vertical: 4,
+              ),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.75),
                 borderRadius: BorderRadius.circular(7),
               ),
-
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     '7.7',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
                   ),
-
                   SizedBox(width: 3),
-
-                  Text('⭐', style: TextStyle(fontSize: 13)),
+                  Text(
+                    '⭐',
+                    style: TextStyle(fontSize: 13),
+                  ),
                 ],
               ),
             ),

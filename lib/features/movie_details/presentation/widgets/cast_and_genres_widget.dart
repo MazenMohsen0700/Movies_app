@@ -2,54 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
-
-
-
-class CastModel {
-  final String name;
-  final String character;
-  final String imagePath;
-
-  const CastModel({
-    required this.name,
-    required this.character,
-    required this.imagePath,
-  });
-}
+import '../../domain/entities/cast_entity.dart';
 
 class CastAndGenresWidget extends StatelessWidget {
-  const CastAndGenresWidget({Key? key}) : super(key: key);
+  final String description;
+  final List<CastEntity> cast;
+  final List<String> genres;
 
-  final List<CastModel> castList = const [
-    CastModel(
-      name: 'Hayley Atwell',
-      character: 'Captain Carter',
-      imagePath: 'assets/cost/Hayley.png',
-    ),
-    CastModel(
-      name: 'Elizabeth Olsen',
-      character: 'Wanda Maximoff / The Scarlet Witch',
-      imagePath: 'assets/cost/Elizabeth.png',
-    ),
-    CastModel(
-      name: 'Rachel McAdams',
-      character: 'Dr. Christine Palmer',
-      imagePath: 'assets/cost/Rachel.png',
-    ),
-    CastModel(
-      name: 'Charlize Theron',
-      character: 'Clea',
-      imagePath: 'assets/cost/Charlize.png',
-    ),
-  ];
-
-  final List<String> genres = const [
-    'Action',
-    'Sci-Fi',
-    'Adventure',
-    'Fantasy',
-    'Horror',
-  ];
+  const CastAndGenresWidget({
+    super.key,
+    required this.description,
+    required this.cast,
+    required this.genres,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +36,9 @@ class CastAndGenresWidget extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          const Text(
-            'Following the events of Spider-Man No Way Home, Doctor Strange unwittingly casts a forbidden spell that accidentally opens up the multiverse. With help from Wong and Scarlet Witch, Strange confronts various versions of himself as well as teaming up with the young America Chavez while traveling through various realities and working to restore reality as he knows it. Along the way, Strange and his allies realize they must take on a powerful new adversary who seeks to take over the multiverse.—Blazer346',
-            style: TextStyle(
+          Text(
+            description,
+            style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 14,
               height: 1.4,
@@ -94,8 +59,8 @@ class CastAndGenresWidget extends StatelessWidget {
           const SizedBox(height: 12),
 
           Column(
-            children: castList
-                .map((cast) => _buildCastCard(cast))
+            children: cast
+                .map((castMember) => _buildCastCard(castMember))
                 .toList(),
           ),
 
@@ -126,7 +91,7 @@ class CastAndGenresWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCastCard(CastModel cast) {
+  Widget _buildCastCard(CastEntity cast) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(8),
@@ -138,8 +103,8 @@ class CastAndGenresWidget extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              cast.imagePath,
+            child: Image.network(
+              cast.image,
               width: 55,
               height: 55,
               fit: BoxFit.cover,
@@ -204,7 +169,7 @@ class CastAndGenresWidget extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: cast.character,
+                        text: cast.characterName,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
