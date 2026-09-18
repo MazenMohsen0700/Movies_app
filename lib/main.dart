@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'l10n/app_localizations.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // import المكتبة
+import 'package:movie_app/features/Auth/presentation/screens/login_screen.dart';
 
-
+import 'core/conging/confing.dart';
+import 'features/browse_movies/presentation/screens/browse_movies_screen.dart';
+import 'firebase_options.dart';
 import 'features/Auth/presentation/cubit/auth_cubit.dart';
 import 'features/Auth/presentation/cubit/cubit_changel_lang.dart';
 import 'features/Auth/presentation/screens/login_screen.dart';
@@ -18,6 +20,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
