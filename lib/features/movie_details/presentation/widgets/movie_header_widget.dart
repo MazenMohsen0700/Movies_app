@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import '../../data/data_sources/watchlist_remote_data_source.dart';
 
 class MovieHeaderWidget extends StatefulWidget {
+  final int movieId;
   final String title;
   final String year;
   final String imagePath;
@@ -14,6 +18,7 @@ class MovieHeaderWidget extends StatefulWidget {
 
   const MovieHeaderWidget({
     super.key,
+    required this.movieId,
     required this.title,
     required this.year,
     required this.imagePath,
@@ -30,6 +35,8 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
   bool isSaved = false;
   bool isLiked = false;
   late int currentLikes;
+  final WatchlistRemoteDataSource watchlistDataSource =
+  WatchlistRemoteDataSource();
 
   @override
   void initState() {
@@ -103,10 +110,39 @@ class _MovieHeaderWidgetState extends State<MovieHeaderWidget> {
                 child: CircleAvatar(
                   backgroundColor: Colors.black.withOpacity(0.4),
                   child: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isSaved = !isSaved;
-                      });
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+
+                      if (user == null) {
+                        return;
+                      }
+
+                      try {
+                        if (isSaved) {
+                          await watchlistDataSource.removeFromWatchlist(
+                            userId: user.uid,
+                            movieId: widget.movieId,
+                          );
+                        } else {
+                          await watchlistDataSource.addToWatchlist(
+                            userId: user.uid,
+                            movieId: widget.movieId,
+                            title: widget.title,
+                            imagePath: widget.imagePath,
+                          );
+                        }
+
+                        setState(() {
+                          isSaved = !isSaved;
+                        });
+                      } catch (e) {
+                        debugPrint('Watchlist error: $e');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Watchlist error: $e'),
+                          ),
+                        );
+                      }
                     },
                     icon: Icon(
                       isSaved

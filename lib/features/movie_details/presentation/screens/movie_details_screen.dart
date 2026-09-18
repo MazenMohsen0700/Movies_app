@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../data/data_sources/remote_data_source.dart';
+import  '../../data/data_sources/history_remote_data_sourse.dart';
 import '../../data/repositories/movie_details_repository_impl.dart';
 import '../../domain/usecases/get_movie_details_usecase.dart';
 import '../bloc/movie_details_bloc.dart';
@@ -13,14 +15,48 @@ import '../widgets/screen_shots_widget.dart';
 import '../widgets/similar_movies_widget.dart';
 import '../widgets/cast_and_genres_widget.dart';
 
-
-class MovieDetailsScreen extends StatelessWidget {
+class MovieDetailsScreen extends StatefulWidget {
   final int movieId;
 
   const MovieDetailsScreen({
     super.key,
     required this.movieId,
   });
+
+  @override
+  State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
+}
+
+class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  final HistoryRemoteDataSource historyDataSource =
+  HistoryRemoteDataSource();
+
+  bool historySaved = false;
+
+  Future<void> _saveToHistory({
+    required int movieId,
+    required String title,
+    required String imagePath,
+  }) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return;
+    }
+
+    try {
+      await historyDataSource.addToHistory(
+        userId: user.uid,
+        movieId: movieId,
+        title: title,
+        imagePath: imagePath,
+      );
+
+      debugPrint('Movie added to history');
+    } catch (e) {
+      debugPrint('History error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +72,7 @@ class MovieDetailsScreen extends StatelessWidget {
 
     return BlocProvider(
       create: (_) => MovieDetailsBloc(useCase)
-        ..add(GetMovieDetailsEvent(movieId)),
+        ..add(GetMovieDetailsEvent(widget.movieId)),
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
@@ -54,10 +90,23 @@ class MovieDetailsScreen extends StatelessWidget {
             }
 
             if (state is MovieDetailsSuccess) {
+              if (!historySaved) {
+                historySaved = true;
+
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _saveToHistory(
+                    movieId: widget.movieId,
+                    title: state.movie.titleLong,
+                    imagePath: state.movie.backgroundImage,
+                  );
+                });
+              }
+
               return ListView(
                 physics: const BouncingScrollPhysics(),
                 children: [
                   MovieHeaderWidget(
+                    movieId: widget.movieId,
                     title: state.movie.titleLong,
                     year: state.movie.year.toString(),
                     imagePath: state.movie.backgroundImage,
@@ -76,12 +125,14 @@ class MovieDetailsScreen extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                   SimilarMoviesWidget(movieId: movieId,),
+                  SimilarMoviesWidget(
+                    movieId: widget.movieId,
+                  ),
 
                   const SizedBox(height: 20),
 
                   CastAndGenresWidget(
-                    description:state.movie.description,
+                    description: state.movie.description,
                     cast: state.movie.cast,
                     genres: state.movie.genres,
                   ),
